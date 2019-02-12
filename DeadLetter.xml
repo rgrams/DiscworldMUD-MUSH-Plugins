@@ -1,42 +1,46 @@
+<!--
+Copyright (C) 2018 Ruhsbaar
+
+Modified in 2019 by Ross Grams AKA "Tuppy"
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE muclient>
 <muclient>
     <plugin
         name="DeadLetter"
-        author="Ruhsbaar"
+        author="Ruhsbaar_and_Tuppy"
         language="Lua"
         purpose="Identify the target of Dead Letter missions"
         date_written="2017-05-29"
-        date_modified="2018-05-05"
+        date_modified="2019-02-11"
         save_state="n"
-        version="0.1"
+        version="1.0"
         id="77541a5fdc7c032524fb75d6"
         >
     </plugin>
-    <aliases>
-        <alias
-            match="solveletter"
-            enabled="y"
-            ignore_case="y"
-            sequence="30"
-            script="DeadLetterSolver"
-        ></alias>
-        <alias
-            match="sl"
-            enabled="y"
-            ignore_case="y"
-            sequence="30"
-            script="DeadLetterSolver"
-        ></alias>
-    </aliases>
     <script>
         <![CDATA[
-difficult_customer = {
+
+local difficult_customer = {
  ["Triad Boss"] = {"Triad Boss", "Medina, Bes Pelargic" },
  ["The Grflx"] = {"The Grflx", "Large cavern, Skund Forest" },
  ["Vyrt"] = {"Vyrt", "Ephebe" },
  ["Avalanche Preventore"] = {"Avalanche Preventore", "Endless Halls (say 'Endless Halls' to Hermal of Sandelfon)" },
- ["The Librarian"] = {"The Librarian", "Unseen University, wanders (in L-space)" },
+ ["The Librarian"] = {"The Librarian", "Unseen University, (wanders in L-space)" },
  ["Smuggler captain"] = {"Smuggler captain", "Ephebe underground" },
  ["Queen Shelox"] = {"Queen Shelox", "Gloomy Forest" },
  ["The Clown (Ha'pennywise)"] = {"The Clown (Ha'pennywise)", "Genua Sewers" },
@@ -48,8 +52,7 @@ difficult_customer = {
  ["Hotan Hwoar Ni"] = {"Hotan Hwoar Ni", "Hotan Hwoar Ni's Rare Armours, The Snail, Sum Bing, Bes Pelargic" },
  ["Security guards"] = {"Security guards", "First Imperial Bank, Bes Pelargic" },
 }
-
-distant_land = {
+local distant_land = {
  ["Boy Willie"] = {"Boy [Willie]","Bes Pelargic, The Agatean Empire"  },
  ["Disembowel-Meself-Honourably Dibhala"] = {"Disembowel-Meself-Honourably [Dibhala]","Bes Pelargic"  },
  ["Glod-san"] = {"[Glod-san]","Bes Pelargic"  },
@@ -77,14 +80,13 @@ distant_land = {
  ["Berti Boggis"] = {"[Berti] Boggis","Skund Forest, Pekan Ford"  },
  ["The Proprietor"] = {"The Proprietor","A ferry shop, Counterweight Continent"  }
 }
-
-far_away = {
+local far_away = {
  ["Cern Smith"] = {"Cern Smith","Bad Ass"  },
  ["Granny Weatherwax"] = {"Granny Weatherwax","Bad Ass (Witches' Guild)"  },
  ["Gulta Smith"] = {"Gulta Smith","Bad Ass"  },
  ["Hanlo Shepston"] = {"Hanlo Shepston","Bad Ass, The Forge"  },
  ["Jaims Smith"] = {"[Jaims] Smith","Bad Ass"  },
- ["Kev Ogg / Mr. Ogg"] = {"Kev Ogg / Mr. Ogg","Bad Ass, Forge"  },
+ ["Kev Ogg"] = {"Kev Ogg / Mr. Ogg","Bad Ass, Forge"  },
  ["Martha Headlock"] = {"Martha Headlock","Bad Ass"  },
  ["Mrs Smith"] = {"Mrs Smith","Bad Ass"  },
  ["Cohen the Barbarian"] = {"Cohen the Barbarian","Barbarian camp"  },
@@ -92,10 +94,10 @@ far_away = {
  ["Morchella Esculenta"] = {"Morchella Esculenta","Blackglass, Undead Defence Shop"  },
  ["Emile"] = {"Emile","Bois, pub"  },
  ["Fern Golly"] = {"Fern Golly","Brass Neck, Brightly coloured (toy) stall"  },
- ["Granville"] = {"Granville","Brass Neck, Village Shop"  },
+ ["Granville"] = {"Granville","Brass Neck, Village Shop (the general store)"  },
  ["Virgo Vango"] = {"Virgo Vango","Brass Neck (Portrait Shop)"  },
  ["The Proprietor"] = {"The Proprietor","Brown Islands, Souvenir Shop"  },
- ["Scuttle Me Own Canoe Dihbl / SMOC Dihbl"] = {"Scuttle Me Own Canoe Dihbl / SMOC Dihbl","Calh-Nhad"  },
+ ["Scuttle Me Own Canoe Dihbl"] = {"Scuttle Me Own Canoe Dihbl / SMOC Dihbl","Calh-Nhad"  },
  ["Dia Shale"] = {"Dia Shale","Creel Springs"  },
  ["Esther Elderbury"] = {"Esther Elderbury","Creel Springs"  },
  ["DEATH"] = {"DEATH","Death's realm"  },
@@ -138,7 +140,7 @@ far_away = {
  ["Ayna"] = {"Ayna","The Magick Boxe, Genua"  },
  ["Blloddwyn"] = {"Blloddwyn","'Y Crochan Ddu' Tavern, Genua"  },
  ["Brittnee"] = {"Brittnee","Savannah Road, Genua"  },
- ["Captain Merreaux Vingian"] = {"Captain Merreaux Vingian","Musketeers, Genua"  },
+ ["Captain Merreaux Vingian"] = {"Captain Merreaux Vingian","Musketeers, Genua (recruiting office/guild room)"  },
  ["Cogsworth"] = {"Cogsworth","Cogsworth's Clocks, Genua"  },
  ["David Leatherman"] = {"David Leatherman","Marketplace, Genua"  },
  ["Edna Scum"] = {"Edna Scum","Pirate Avenue, Scum Bar"  },
@@ -208,75 +210,306 @@ far_away = {
  ["Innkeeper"] = {"Innkeeper","Unnamed town, Uberwald"  },
  ["Spiegal"] = {"Spiegal","Ye Olde Weapons Shoppe, Unnamed town, Uberwald"  }
 }
+local close_by = {
+  ["Arnold Sideways"] = {"[Arnold Sideways]", "Ankh-Morpork"},
+  ["Captain Carrot"] = {"Captain Carrot", "Ankh-Morpork, Ankh-Morpork City Watch"},
+  ["Coffin Henry"] = {"Coffin Henry", "Ankh-Morpork"},
+  ["Cripple Wa"] = {"Cripple Wa", "Ankh-Morpork, Fish Dock"},
+  ["Cut-My-Own-Throat Dibbler"] = {"Cut-Me-Own-Throat [Dibbler]", "Ankh-Morpork"},
+  ["Duck Man"] = {"Duck Man", "Ankh-Morpork"},
+  ["Foul Ole Ron"] = {"Foul Ole [Ron]", "Ankh-Morpork"},
+  ["Francis with his ukulele of pain"] = {"[Francis] with his ukulele of pain", "Ankh-Morpork"},
+  ["Gok'wan"] = {"Gok'wan", "Ankh-Morpork"},
+  ["Gritjaw Thighsplitter"] = {"Gritjaw Thighsplitter", "Ankh-Morpork, Dwarf District"},
+  ["Hobbling Tim"] = {"Hobbling Tim", "Ankh-Morpork, Sheer Street"},
+  ["Hoff Buchannon"] = {"[Hoff] Buchannon", "Ankh-Morpork"},
+  ["Jocasta Wiggs"] = {"[Jocasta] Wiggs", "Ankh-Morpork"},
+  ["Kodattai"] = {"Kodattai", "Ankh-Morpork, The Cattle District"},
+  ["Lewis Wyatt"] = {"Lewis Wyatt", "Ankh-Morpork, near Weaver Street"},
+  ["Louis Bingham"] = {"Louis Bingham", "Ankh-Morpork"},
+  ["Maple Bede"] = {"Maple Bede", "Ankh-Morpork"},
+  ["Maude Scowd"] = {"Maude Scowd", "Ankh-Morpork"},
+  ["Mellie Thistlewhistle"] = {"Mellie Thistlewhistle", "Ankh-Morpork"},
+  ["Mr Glodson"] = {"Mr Glodson", "Ankh-Morpork"},
+  ["Mr Pin"] = {"Mr Pin", "Ankh-Morpork"},
+  ["Mr Tulip"] = {"Mr Tulip", "Ankh-Morpork"},
+  ["Mrs. Cosmopilite"] = {"Mrs. Cosmopilite", "Holy Wood"},
+  ["Neelie Awkside"] = {"Neelie Awkside", "Ankh-Morpork"},
+  ["Nobby Nobs"] = {"Nobby Nobbs", "Ankh-Morpork, Ankh-Morpork City Watch"},
+  ["Old Wilfred"] = {"Old Wilfred", "Ankh-Morpork"},
+  ["Prodo Laggins"] = {"Prodo Laggins", "Ankh-Morpork"},
+  ["Ronnie Soak"] = {"Ronnie Soak", "Ankh-Morpork"},
+  ["Sacharissa Cripslock"] = {"Sacharissa Cripslock", "Ankh-Morpork, Ankh-Morpork City Watch"},
+  ["Salan Feiht"] = {"Salan Feiht", "Ankh-Morpork"},
+  ["Sergeant Colon"] = {"Sergeant Colon", "Ankh-Morpork, Ankh-Morpork City Watch"},
+  ["Shopkeeper"] = {"Shopkeeper", "Nowhere"},
+  ["Sneed Finkman"] = {"Sneed Finkman", "Ankh-Morpork"},
+  ["Squinty Jeb"] = {"Squinty Jeb", "Sto Plains, A Hut"},
+  ["The LAG"] = {"The LAG", "Ankh-Morpork"},
+  ["The Weasel"] = {"The Weasel", "Ankh-Morpork"},
+  ["Tneduts"] = {"Tneduts", "Ankh-Morpork, On a Pub Crawl"},
+  ["Alberto Malich"] = {"Albert", "Death's Domain"},
+  ["Aloysius Habenpfeifer"] = {"Aloysius Habenpfeifer", "Hillshire, Tobacco Shop"},
+  ["Ruby"] = {"Ruby", "Holy Wood, The Blue Lias"},
+  ["Director"] = {"Director", "Holy Wood, Century of the Fruitbat Moving Pictures"},
+  ["I don't know his name but he's pretty old and gnarled please find him"] = {"Gnarled old man", "Nowhere"},
+  ["Sue Pekan"] = {"Sue Pekan", "Pekan Ford, Village Store"},
+  ["Tom Pekan"] = {"Tom Pekan", "Pekan Ford, Village Pub"},
+  ["Carlton Desric"] = {"Carlton Desric", "Scrogden"},
+  ["Hughoc Gatewood"] = {"Hughoc Gatewood", "Scrogden"},
+  ["Hamesh"] = {"[Hamesh]", "Sheepridge"},
+  ["Valentino"] = {"Valentino", "Sheepridge, Valentino's Flower Stall"},
+  ["Findel Nordelsson"] = {"Findel Nordelsson", "Sto Lat, Heritage Hill, Souvenir Shop"},
+  ["Fleppo"] = {"Fleppo", "Sto Lat, Bathrobe shop, Royal Market"},
+  ["Gerard de Wendelle"] = {"Gerard de Wendelle", "Sto Lat, Wall Street, Gerard de Wendelle's evening dress shop"},
+  ["Gerti Kotzbeck"] = {"Gerti Kotzbeck", "Sto Lat, Blueberry Lane, Gerti's Cake shop"},
+  ["Holly Cloverfield"] = {"Holly Cloverfield", "Sto Lat, Royal Market, The Rock-A-Rama jewellery shop"},
+  ["Jack Straw"] = {"Jack Straw", "Sto Lat, Garlic Grove"},
+  ["Madam Miliena"] = {"Madam Miliena", "Sto Lat, Garlic Grove, Olde Locket Shoppe"},
+  ["Master Gildworthy"] = {"Master Gildworthy", "Sto Lat, Academy of Artificers"},
+  ["Miss Armitage"] = {"Miss Armitage", "Sto Lat, Queens Road"},
+  ["Miss Wylde"] = {"Miss Wylde", "Sto Lat, Queens Road, Wylde's Fashionable Ladies Wear"},
+  ["Mrs Willikins-Boydle"] = {"Mrs Willikins-Boydle", "Sto Lat, Queens Road"},
+  ["Mysteria della Noctis"] = {"Mysteria della Noctis", "Sto Lat, Queen's Road, The Dragon Emporium"},
+  ["Nils Beerman"] = {"Nils Beerman", "Sto Lat, Cabbage Street, Nils Beerman's Light Store"},
+  ["Omar Amahl"] = {"Omar Amahl", "Sto Lat, Cabbage Street, Omar Amahl's Jewellery Shop"},
+  ["Oncle Hamash"] = {"Oncle Hamash", "Sto Lat, Frozen Alley, Oncle Hamash Bookshop"},
+  ["Paul Zombo"] = {"Paul Zombo", "Sto Lat, King's Road, Guard Room"},
+  ["Peter Periwinkle"] = {"Peter Periwinkle", "Sto Lat, Hill Street, Pet Shop"},
+  ["Tneduts"] = {"Tneduts", "Ankh-Morpork, On A Pub Crawl"},
+  ["Tony Robinson"] = {"Tony Robinson", "Sto Lat, Cabbage Street, Tony Robinson's Bar"},
+  ["Quinbury Soames"] = {"Quinbury Soames", "Sto Lat, Quirm Street, Stationer's Shop"},
+  ["Ragman"] = {"Ragman", "Sto Lat, Grave's Hope"},
+  ["The Proprietor"] = {"Blacksmith", "Sto Lat, The Royal Market Smithy"},
+  ["Isobel Kingdom"] = {"Isobel Kingdom", "Sto Lat, Academy of Artificers"},
+}
+local local_ = {
+  ["Ada Woonsocket"] = {"Ada Woonsocket", "Ankh-Morpork, Upper Broadway"},
+  ["Alfred Musqrat"] = {"Alfred Musqrat", "Ankh-Morpork, Sheer Street, Paint Shop"},
+  ["Anita Hurpley"] = {"Anita Hurpley", "Ankh-Morpork, God's Collar, Battes Ande Cakes"},
+  ["Apold Blorkman"] = {"Apold Blorkman", "Ankh-Morpork, West Ankh Ferry"},
+  ["Archemedies"] = {"Archemedies", "Ankh-Morpork, Artorollo Alley, Georgio's pizza place"},
+  ["Argule Wibbley"] = {"Argule Wibbley", "Ankh-Morpork, Cockbill Street, Argule Wibbley's Pottery Shop"},
+  ["Barry"] = {"Barry", "Ankh-Morpork, Phedre Road, Jenn & Barry's Ice Cream Parlour"},
+  ["Benno Lacoste"] = {"Benno Lacoste", "Ankh-Morpork, Prouts, Wine Warehouse"},
+  ["Bernita"] = {"Bernita", "Ankh-Morpork, Treacle Street, Bernita's Flower Shop"},
+  ["Bertha"] = {"Bertha", "Ankh-Morpork, God Street"},
+  ["Bligh Earcrusher"] = {"Bligh Earcrusher", "Ankh-Morpork, Park Street, Bligh Earcrusher's exclusive shop"},
+  ["Brother David"] = {"Brother David", "Ankh-Morpork, Short Street, The house of rest and safety"},
+  ["Cadmium"] = {"Cadmium", "Ankh-Morpork, Cable Street, Gimlet's Hole Food Delicatessen"},
+  ["Constable Dorfl"] = {"Constable Dorfl", "Ankh-Morpork, Pseudopolis Yard Watch House, Ankh-Morpork City Watch"},
+  ["Constable Swires"] = {"Constable Swires", "Ankh-Morpork, Pseudopolis Watch House, Ankh-Morpork City Watch"},
+  ["Constable Visit"] = {"Constable Visit", "Ankh-Morpork, Pseudopolis Watch House, Ankh-Morpork City Watch"},
+  ["Cutta"] = {"Cutta", "Ankh-Morpork, Cattle District, Pony Parts"},
+  ["Cynthia Potts"] = {"Cynthia Potts", "Ankh-Morpork, Losing Street, Stop Losing Your Way"},
+  ["Dagmar Schmet"] = {"Dagmar Schmet", "Ankh-Morpork, The Street of Alchemists, Guild of Alchemists"},
+  ["Darren Spangler"] = {"Darren Spangler", "Ankh-Morpork, Sator Square, Magical Emporium"},
+  ["Derek Wadley"] = {"Derek Wadley", "Ankh-Morpork, Alguinna Alley, Cheese Shop"},
+  ["Dhraz Shaftrubble"] = {"Dhraz Shaftrubble", "Ankh-Morpork, Iron Helmet"},
+  ["Dimitris"] = {"Dimitris", "Ankh-Morpork, Dimwell Street, Dimitris' Dummies"},
+  ["Dogbottler"] = {"Dogbottler", "Ankh-Morpork, Short Street"},
+  ["Doss Chiderdoss"] = {"Doss Chiderdoss", "Ankh-Morpork, Street of the Alchemists"},
+  ["Drakko"] = {"Drakko", "Ankh-Morpork, Salt Shaker, Flat 2"},
+  ["Ella Montigue"] = {"Ella Montigue", "Ankh-Morpork, Dolly Sisters,"},
+  ["Emmaline Lamb"] = {"Emmaline Lamb", "Ankh-Morpork, Pleaders Row, Emmaline Lamb's World of Baskets"},
+  ["Felicity Hopkinson"] = {"Felicity Hopkinson", "Ankh-Morpork, Whirglig Alley, Dwarf Bread Museum"},
+  ["Flyn Skint"] = {"Flyn Skint", "Ankh-Morpork, The Waterfront, Flyn's Place"},
+  ["Fred"] = {"Fred", "Ankh-Morpork, Endless Street, Fred's Emporium and Clothing Shop"},
+  ["Fred Sylver"] = {"Fred Sylver", "Ankh-Morpork, Washer Way, Sylver's"},
+  ["Geoffrey"] = {"Geoffrey", "Ankh-Morpork, God Street (in Bertha's House)"},
+  ["Geremiah Codger"] = {"Geremiah Codger", "Ankh-Morpork, Widdershins Broadway"},
+  ["Gerry Watkins"] = {"Gerry Watkins", "Ankh-Morpork, Dimwell Street"},
+  ["Gimlet"] = {"Gimlet", "Ankh-Morpork, Cable Street, Gimlet's Hole Food Delicatessen"},
+  ["Gladys"] = {"Gladys", "Ankh-Morpork, The Street of Cunning Artificers, Bob's Fish Shoppe"},
+  ["Gore Batchev"] = {"Gore Batchev", "Ankh-Morpork, Ankh Street, Batchev's World of Maps"},
+  ["Gunther"] = {"Gunther", "Ankh-Morpork, Market Street, Costlee Coffee"},
+  ["Gwawr Clwyd"] = {"Gwawr Clwyd", "Ankh-Morpork, Phedre Road, Tannery"},
+  ["Ham Burgner"] = {"Ham Burgner", "Ankh-Morpork, The Maul, Burgner's Coffee on the Maul"},
+  ["Harmony Stardancer"] = {"Harmony Stardancer", "Ankh-Morpork, Treacle Street, Harmony Stardancer's Magical Shoppe"},
+  ["Harold Cobbler"] = {"Harold Cobbler", "Ankh-Morpork, 1_ Elm Street (western end)"},
+  ["Henufi Icta"] = {"Henufi Icta", "Ankh-Morpork, The Soake, The Laughing Falafel"},
+  ["Hibiscus Dunelm"] = {"Hibiscus Dunelm", "Ankh-Morpork, The Mended Drum, Filigree Street"},
+  ["Hwel"] = {"Hwel", "Ankh-Morpork, Isle of Gods, The Dysk"},
+  ["Inga"] = {"Inga", "Ankh-Morpork, The Pain in the Neck"},
+  ["Ixolite"] = {"Ixolite", "Ankh-Morpork, Fresh Start Club, Elm Street Not always there - possibly appears in the room to the east of the club room."},
+  ["Jacinthe Bockxse"] = {"Jacinthe Bockxse", "Ankh-Morpork, Ankh Street, Batchev's World of Maps"},
+  ["Jack Banks"] = {"Jack Banks", "Ankh-Morpork, God's Collar, Starbanks"},
+  ["John Tetzel"] = {"John Tetzel", "Ankh-Morpork, The Street of Small Gods, Tetzel's Indulgences"},
+  ["Kenneth"] = {"Kenneth", "Ankh-Morpork, Market Street"},
+  ["Kurr Ency"] = {"Kurr Ency", "Ankh-Morpork, The Pitts, The Coin Corner"},
+  ["Lady Timatis"] = {"Lady Timatis", "Ankh-Morpork, God's Collar, Escort Agency reception (ask receptionist for appointment)"},
+  ["Lilith Z. Dharienne"] = {"Lilith Z. Dharienne", "Ankh-Morpork, Body Street, Karma 'R' Us"},
+  ["Liona Keeble"] = {"Liona Keeble", "Ankh-Morpork, Cheap Street, Keeble's Job Shop"},
+  ["Little Jimmy"] = {"Little Jimmy", "Ankh-Morpork, Endless St, Souvenir Shop (by Least Gate)"},
+  ["Luciano Flabbarotti"] = {"Luciano Flabbarotti", "Ankh-Morpork, Pseudopolis Yard, The Stab in the Back"},
+  ["Madame Gumble"] = {"Madame Gumble", "Ankh-Morpork, Cockbill Street, Madame Gumble's Jewellery"},
+  ["Manuel Fawlty"] = {"Manuel Fawlty", "Ankh-Morpork, God Street, The Curry Gardens"},
+  ["Mardi"] = {"Mardi", "Ankh-Morpork, Phedre Road, Craf__Co_r_, Masqueparade"},
+  ["Maria"] = {"Maria", "Ankh-Morpork, Phedre Road, Poster Shop"},
+  ["Master Nimbledrit"] = {"Master Nimbledrit", "Ankh-Morpork, Ettercap Street, Master Nimbledrit's Shop of Crafting Equipment"},
+  ["Miss Ha'penny"] = {"Miss Ha'penny", "Ankh-Morpork, Speedwell Street"},
+  ["Mo Astor"] = {"Mo Astor", "Ankh-Morpork, Cattle District, Baron Street, Frenly Money Changerz"},
+  ["Monsieur Rosset"] = {"Monsieur Rosset", "Ankh-Morpork, Pseudopolis Yard, Monsieur Rosset's Hairdressing Salon"},
+  ["Mr Cranwell"] = {"Mr Cranwell", "Ankh-Morpork, The street of Cunning Artificers, The Engravers"},
+  ["Mr Cropper"] = {"Mr Cropper", "The Print Shop, Pseudopolis Yard, Isle of the Gods, Ankh-Morpork"},
+  ["Mr Graves"] = {"Mr Graves", "Ankh Morpork, Chrononhotonthologos Street, Grangrid, Graves, and Descendants"},
+  ["Mr Lumiere"] = {"Mr Lumiere", "Ankh-Morpork, Market Street"},
+  ["Mr. Manson"] = {"Mr. Manson", "Ankh-Morpork, Elm Street, Elm Street Mortuary"},
+  ["Mr. Stronginthearm"] = {"Mr. Stronginthearm", "Ankh-Morpork, Lower Broadway, Weaponsmith"},
+  ["Mr. Scoonwinkle"] = {"Mr. Scoonwinkle", "Ankh-Morpork, Hopper Street, Scoonwinkle's Shoe Store"},
+  ["Mr Vitiolo"] = {"Mr Vitiolo", "Ankh-Morpork, Brookless Lane, Calligraphy shop"},
+  ["Mrs Corduroy"] = {"Mrs Corduroy", "Ankh-Morpork, Chrononhotonthologos Street, Mrs Corduroy's Stuffed Animals"},
+  ["Mrs. Armitage"] = {"Mrs. Armitage", "Ankh-Morpork, Loom Alley, Embroidery Shop"},
+  ["Mr. Goodmountain"] = {"Mr. Goodmountain", "Ankh-Morpork, Gleam Street, busy printing room"},
+  ["Mrs. Confectionairre"] = {"Mrs. Confectionairre", "Ankh-Morpork, Salis Street, Confections De Confectionairre"},
+  ["Mrs. Dodger"] = {"Mrs. Dodger", "Ankh-Morpork, Isle of Gods, Pseudopolis Yard Watch House"},
+  ["Mrs Green"] = {"Mrs Green", "Ankh-Morpork, Zephire Street, Second Hand Shop"},
+  ["Mrs Vera Johannes"] = {"Mrs Vera Johannes", "Ankh-Morpork, Spa Lane, Milords & Miladies"},
+  ["Ms Estible"] = {"Ms Estible", "Ankh-Morpork, The Willows, The Head of the Table"},
+  ["Murgatroyd Listey"] = {"Murgatroyd Listey", "Ankh-Morpork, Humble Street, Souvenir Shop"},
+  ["Nese Stenzelle"] = {"Nese Stenzelle", "Ankh-Morpork, Phedre Road, Nese's Fine Decor"},
+  ["Old Crumble"] = {"Old Crumble", "Ankh-Morpork, The Bucket"},
+  ["Olson"] = {"Olson", "Ankh-Morpork, Water Street, Olson's Iron Shop"},
+  ["Onna Hitokui"] = {"Onna Hitokui", "Ankh-Morpork, Upper Broadway, The Salt Shaker"},
+  ["Patrice Le Clair"] = {"Patrice Le Clair", "Ankh-Morpork, The Goose Gate (market stall)"},
+  ["Pierre Grepe"] = {"Pierre Grepe", "Ankh-Morpork, God's Collar, Vino pour la Femme et le Homme"},
+  ["Placido Flamingo"] = {"Placido Flamingo", "Ankh-Morpork, Pseudopolis Yard, The Stab in the Back"},
+  ["Ptom Psmith"] = {"Ptom Psmith", "Ankh-Morpork, East Ankh Ferry,"},
+  ["Rattigan"] = {"Rattigan", "Ankh-Morpork, God's Collar, rat infested house"},
+  ["Rebecca Palm"] = {"Rebecca Palm", "Ankh-Morpork, Sator Square, Magical Supplies Emporium, Rebecca Palm's Clothing"},
+  ["Reg Shoe"] = {"Reg Shoe", "Ankh-Morpork, Elm Street, The Fresh Start Club"},
+  ["Renee Palm"] = {"Renee Palm", "Ankh-Morpork, Scoone Avenue, Djinn's Famous Flying Carpets"},
+  ["Rinaldo"] = {"Rinaldo", "Ankh-Morpork, The Mouldy Cellar"},
+  ["Roffle"] = {"Roffle", "Ankh-Morpork, Upper Broadway (wanders)"},
+  ["Sa__haro_e"] = {"Sa__haro_e", "Ankh-Morpork"},
+  ["Sandra"] = {"Sandra", "Ankh-Morpork, Lower Broadway, Guild of Playwrights"},
+  ["Scheda Carte"] = {"Scheda Carte", "Ankh-Morpork, Attic Bee Street, Card Shop"},
+  ["Septa DeBlano"] = {"Septa DeBlano", "Ankh-Morpork, Street of Small Gods, Temple of Small Gods"},
+  ["Sergeant Littlebottom"] = {"Sergeant Littlebottom", "Ankh-Morpork, Pseudopolis Yard Watch House"},
+  ["Sergeant Skyler"] = {"Sergeant Skyler", "Ankh-Morpork, Ankh-Morpork City Watch, Long Wall Watch House"},
+  ["Seymour Convecks"] = {"Seymour Convecks", "Ankh-Morpork, Cheesemongers Yard, The Optometrist's"},
+  ["Shapaya"] = {"Shapaya", "Ankh-Morpork, Apartment on Grunefair"},
+  ["Shmata"] = {"Shmata", "Ankh-Morpork, Misbegot Bridge"},
+  ["Sol"] = {"Sol", "Ankh-Morpork, Thieves' Guild"},
+  ["Spanky"] = {"Spanky", "Ankh-Morpork, God's Collar, Armourer"},
+  ["Starspirit Moonfire"] = {"Starspirit Moonfire", "Ankh-Morpork, Cockbill Street, Krazzander's Magik Shoppe"},
+  ["Stren Withel"] = {"Stren Withel", "Ankh-Morpork, Filigree Street, The Mended Drum"},
+  ["Thom Crooze"] = {"Thom Crooze", "Ankh-Morpork, Pseudopolis Yard, All Bar None"},
+  ["Thomas Eddiessonson"] = {"Thomas Eddiessonson", "Ankh-Morpork, Cable Street, The Forge"},
+  ["Time Wemple"] = {"Time Wemple", "Ankh-Morpork, Body Street, Rainbow Homeopaths Incorporated"},
+  ["Too Bath Salts"] = {"Too Bath Salts", "Ankh-Morpork, Little Agatea, 'Bes Pelargic', Laundry House"},
+  ["Won Rip Off"] = {"Won Rip Off", "Ankh-Morpork, Little Agatea, 'Bes Pelargic', Won Rip Off Emporium"},
+  ["Trioll Negurney"] = {"Trioll Negurney", "Ankh-Morpork, Quality Victuals, Trioll Negurney's Cayke Shoppe"},
+  ["Turan"] = {"Turan", "Ankh-Morpork, Cattle District, Baron Street, Stylish Skullduggery"},
+  ["Urotho"] = {"Urotho", "Ankh-Morpork, The Pitts, The Coin Pitt"},
+  ["Veebeel"] = {"Veebeel", "Ankh-Morpork, The Street of Cunning Artificers, Veebeel's fortune telling booth"},
+  ["Wiley Woonsocket"] = {"Wiley Woonsocket", "Ankh-Morpork, Edgeway Road, Woonsocket's Delicatessen"},
+  ["Wun Phul"] = {"Wun Phul", "Ankh-Morpork, Little Agatea, Wun Phul Mouth's Hunghungese Restaurant"},
+  ["Yortuk Festrunk"] = {"Yortuk Festrunk", "Ankh-Morpork, Prouts, Festrunk Brothers"},
+}
 
-letter_type = ""
-letter_pattern = {}
+local all = {local_, close_by, far_away, distant_land, difficult_customer}
 
-function DeadLetterSolver(sName, sLine, wildcards)
-    letter_pattern = {}
-    EnableTrigger("DeadLetterCaptureStart", true)
-    EnableTrigger("DeadLetterCaptureEnd", true)
-    EnableTrigger("DeadLetterCaptureError", true)
-    EnableTrigger("DeadLetterCaptureCombatError", true)
-    Send("read letter")
+-------------------------------------------------
+-- When plugin is loaded, replace brackets in names with bold and unbold ansi codes.
+local function AnsiStyleScryName(s, normalAnsi, scryAnsi)
+  s = string.gsub(s, "[%[]", scryAnsi)
+  s = string.gsub(s, "[%]]", normalAnsi)
+  return s
 end
 
-function DeadLetterParse(sName, sLine, wildcards)
-    if(string.match(wildcards.line, "_")) then
-        table.insert(letter_pattern, wildcards.line)
-    end
+local normalAnsi = ANSI(22) -- Undo bold
+local scryAnsi = ANSI(1) -- Bold
+
+for i,list in ipairs(all) do
+  for k,data in pairs(list) do
+    data[1] = AnsiStyleScryName(data[1], normalAnsi, scryAnsi)
+  end
+end
+-------------------------------------------------
+
+local letter_name = nil
+local overload_line_count = 8 -- The plugin always stops after this many lines.
+local line_count = 0
+local end_line_text = "Written in hastily scrawled text:" -- Prints result after one line after this text.
+local waiting = false
+
+function DeadLetterStart(sName, sLine, wildcards)
+  waiting = false
+  letter_name = nil
+  line_count = 0
+  EnableTrigger("DeadLetterCaptureLine", true)
+  EnableTrigger("DeadLetterCaptureError", true)
+  EnableTrigger("DeadLetterCaptureCombatError", true)
 end
 
 function DeadLetterStop(sName, sLine, wildcards)
-    EnableTrigger("DeadLetterCaptureStart", false)
-    EnableTrigger("DeadLetterCaptureEnd", false)
-    EnableTrigger("DeadLetterCaptureError", false)
-    EnableTrigger("DeadLetterCaptureCombatError", false)
+  EnableTrigger("DeadLetterCaptureLine", false)
+  EnableTrigger("DeadLetterCaptureError", false)
+  EnableTrigger("DeadLetterCaptureCombatError", false)
+  if letter_name then
+    DeadLetterSolution()
+    letter_name = nil
+  end
+end
 
-    if(next(letter_pattern)) then
-        --Note("Letter is due: " .. wildcards.time)
-        DeadLetterSolution()
-        letter_pattern = {}
+function DeadLetterParse(sName, sLine, wildcards)
+  line_count = line_count + 1
+  if waiting then
+    DeadLetterStop()
+  elseif line_count >= overload_line_count then
+    DeadLetterStop()
+  elseif sLine == end_line_text then
+    waiting = true
+  elseif (not letter_name) and string.match(sLine, "_") then
+    letter_name = sLine
+  end
+end
+
+local function checkName(regex, list)
+  local found = false
+  for name,data in pairs(list) do
+    if regex:match(name) then
+      if type(data) ~= "table" then
+        Note("ERROR: 'data' is not a table, it's a '" .. type(data) .. "'.")
+      else
+        found = true
+        AnsiNote(table.concat(data, ", "))
+      end
     end
+  end
+  return found
 end
 
 function DeadLetterSolution()
-    name = rex.new("^".. string.gsub(letter_pattern[1], "_", ".") .. "$")
-    if(letter_pattern[2] ~= nil) then
-        place = rex.new("^" .. string.gsub(letter_pattern[2], "_", "."))
-    else
-        place = nil
+  if letter_name then
+    local name = rex.new("^".. string.gsub(letter_name, "_", ".") .. "$")
+    local found = false
+
+    for i,list in ipairs(all) do
+      local f = checkName(name, list)
+      found = found or f
     end
 
-    for k,v in pairs(difficult_customer) do
-        if(name:match(k)) then
-            if(place:match(v[2])) then
-                Note("[DC] Deliver letter to: " .. v[1] .. " in " .. v[2])
-            end
-        end
+    if not found then
+      Note("Sorry, couldn't find a match for: '" .. tostring(letter_name) .. "'.")
     end
-
-    for k,v in pairs(distant_land) do
-        if(name:match(k)) then
-            if(place:match(v[2])) then
-                Note("[DL] Deliver letter to: " .. v[1] .. " in " .. v[2])
-            end
-        end
-    end
-
-    for k,v in pairs(far_away) do
-        if(name:match(k)) then
-            if(place == nil) then
-                Note("[FA] Deliver letter to: " .. v[1] .. " in " .. v[2])
-            elseif(place:match(v[2])) then
-                Note("[FA] Deliver letter to: " .. v[1] .. " in " .. v[2])
-            end
-        end
-    end
+  end
 end
+
         ]]>
     </script>
     <triggers>
+        <trigger
+            enabled="y"
+            ignore_case="n"
+            keep_evaluating="y"
+            match="Written in scribbled handwriting:"
+            regexp="y"
+            script="DeadLetterStart"
+            sequence="35"
+            name="DeadLetterCaptureStart"
+        ></trigger>
         <trigger
             enabled="n"
             ignore_case="n"
@@ -285,17 +518,7 @@ end
             regexp="y"
             script="DeadLetterParse"
             sequence="35"
-            name="DeadLetterCaptureStart"
-        ></trigger>
-        <trigger
-            enabled="n"
-            ignore_case="n"
-            keep_evaluating="y"
-            match="^Deliver by (?P<time>.+)( \[\w{3}\])?\.$"
-            regexp="y"
-            script="DeadLetterStop"
-            sequence="35"
-            name="DeadLetterCaptureEnd"
+            name="DeadLetterCaptureLine"
         ></trigger>
         <trigger
             enabled="n"
@@ -319,6 +542,3 @@ end
         ></trigger>
     </triggers>
 </muclient>
-<!--
-            match="^Deliver by (?P<time>.+ (\[\w{3}\])?)\."
--->
