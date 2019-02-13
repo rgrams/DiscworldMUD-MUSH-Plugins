@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         language="Lua"
         purpose="Identify the target of Dead Letter missions"
         date_written="2017-05-29"
-        date_modified="2019-02-11"
+        date_modified="2019-02-13"
         save_state="n"
-        version="1.0"
+        version="1.1"
         id="77541a5fdc7c032524fb75d6"
         >
     </plugin>
