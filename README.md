@@ -16,6 +16,13 @@ This plugin will display the full name and location of your dead letter target w
 
 ## Changelog
 
+### Version 1.1
+- Added & improved a whole bunch of people's names & data.
+- When multiple names match, try to sort them out based on the second address line.
+    - Still show a shortlist of these people in case it messes up.
+- Show the letter type before names ("dist", "close", "local", etc.).
+- Added 'solveLetterTest' alias (disabled by default) to test the plugin more easily.
+
 ### Version 1.0
 "Ross Rewrite"
 
