@@ -165,7 +165,7 @@ local far_away = {
  ["Watch clerk"] = {"Watch clerk","Watch House, Genua"},
  ["Wounded soldier"] = {"Wounded soldier","Barracks, Genua"},
  ["Private Inside Leg"] = {"Private Inside Leg","Klatchian Foreign Legion outpost storage tent"},
- ["Monster"] - {"Monster", "Lancre Pool"},
+ ["Monster"] = {"Monster", "Lancre Pool"},
  ["Bestiality Carter"] = {"Bestiality Carter","Lancre Town"},
  ["Brother Turbil"] = {"Brother Turbil","Lancre Town, lodging house"},
  ["Embezile Thatcher"] = {"Embezile Thatcher","Lancre Town, Lancrastian Farmers' Cooperative Bank"},
