@@ -436,6 +436,13 @@ local local_ = {
 }
 
 local all = {difficult_customer, distant_land, far_away, close_by, local_}
+local list_names = {
+  [difficult_customer] = "diff",
+  [distant_land] = "dist",
+  [far_away] = "far",
+  [close_by] = "close",
+  [local_] = "local",
+}
 
 -------------------------------------------------
 -- When plugin is loaded, replace brackets in names with bold and unbold ansi codes.
@@ -467,7 +474,8 @@ local function ClearTable(t)
 end
 
 local testLetter = {
-  "_________i",
+  --"_________i",
+  "__o_____",
   "______la___c",
   "_h__A_a_e_____p__e",
 }
@@ -527,6 +535,16 @@ local function checkName(regex, name, data)
   end
 end
 
+local function getListNameString(list)
+  local s = list_names[list]
+  if not s then
+    Note("Error: getListNameString() - Unrecognized list '" .. tostring(list) .. "'.")
+    s = ""
+  end
+  s = string.format("[%s] ", s)
+  return s
+end
+
 function DeadLetterSolution()
   local name_line = address_lines[1]
   if name_line then
@@ -539,7 +557,7 @@ function DeadLetterSolution()
     for i,list in ipairs(all) do
       for name,data in pairs(list) do
         if checkName(name_regex, name, data) then
-          search_results[name] = data
+          search_results[name] = {data = data, list = list}
           resultCount = resultCount + 1
         end
       end
@@ -550,10 +568,11 @@ function DeadLetterSolution()
       local discardStr = ""
       if #address_lines > 1 then
         local city_line = address_lines[2] -- Second line more reliable than last. (?)
-        for name,data in pairs(search_results) do
-          local city_regex = rex.new("^.*" .. string.gsub(city_line, "_", ".") .. ".*$")
-          if not city_regex:match(data[2]) then
-            discardStr = discardStr .. name .. ", "
+        for name,v in pairs(search_results) do
+          local city_regex = rex.new(string.gsub(city_line, "_", "."))
+          if not city_regex:match(v.data[2]) then
+            local ls = getListNameString(v.list)
+            discardStr = discardStr .. ls .. name .. ", "
             search_results[name] = nil
           end
         end
@@ -568,8 +587,9 @@ function DeadLetterSolution()
     end
 
     -- Print all results.
-    for name,data in pairs(search_results) do
-      AnsiNote(table.concat(data, ", "))
+    for name,v in pairs(search_results) do
+      local s = getListNameString(v.list) .. table.concat(v.data, ", ")
+      AnsiNote(s)
     end
   end
 end
