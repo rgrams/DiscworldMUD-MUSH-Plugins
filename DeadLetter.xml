@@ -32,6 +32,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         id="77541a5fdc7c032524fb75d6"
         >
     </plugin>
+    <aliases>
+      <alias
+        match="solveLetterTest"
+        enabled="y"
+        ignore_case="y"
+        sequence="30"
+        script="DeadLetterTest"
+        name="DeadLetterTest"
+      >
+      </alias>
+    </aliases>
     <script>
         <![CDATA[
 
@@ -423,7 +434,7 @@ local local_ = {
   ["Yortuk Festrunk"] = {"Yortuk Festrunk", "Ankh-Morpork, Prouts, Festrunk Brothers"},
 }
 
-local all = {local_, close_by, far_away, distant_land, difficult_customer}
+local all = {difficult_customer, distant_land, far_away, close_by, local_}
 
 -------------------------------------------------
 -- When plugin is loaded, replace brackets in names with bold and unbold ansi codes.
@@ -443,15 +454,39 @@ for i,list in ipairs(all) do
 end
 -------------------------------------------------
 
-local letter_name = nil
+local address_lines = {}
+local search_results = {}
 local overload_line_count = 8 -- The plugin always stops after this many lines.
 local line_count = 0
 local end_line_text = "Written in hastily scrawled text:" -- Prints result after one line after this text.
 local waiting = false
 
+local function ClearTable(t)
+    for k,v in pairs(t) do  t[k] = nil  end
+end
+
+local testLetter = {
+  "_________i",
+  "______la___c",
+  "_h__A_a_e_____p__e",
+}
+
+function DeadLetterTest()
+  ColourNote("silver", "", "You read the letter:\nWritten in scribbled handwriting:")
+  for i,v in ipairs(testLetter) do
+    address_lines[i] = v
+    ColourNote("silver", "", v)
+  end
+  Note()
+  ColourNote("silver", "", end_line_text)
+  ColourNote("silver", "", "Deliver by Wed Feb 13 16:10:01 2019 [EST].")
+  DeadLetterSolution()
+  ClearTable(address_lines)
+end
+
 function DeadLetterStart(sName, sLine, wildcards)
   waiting = false
-  letter_name = nil
+  ClearTable(address_lines)
   line_count = 0
   EnableTrigger("DeadLetterCaptureLine", true)
   EnableTrigger("DeadLetterCaptureError", true)
@@ -462,9 +497,9 @@ function DeadLetterStop(sName, sLine, wildcards)
   EnableTrigger("DeadLetterCaptureLine", false)
   EnableTrigger("DeadLetterCaptureError", false)
   EnableTrigger("DeadLetterCaptureCombatError", false)
-  if letter_name then
+  if address_lines[1] then
     DeadLetterSolution()
-    letter_name = nil
+    ClearTable(address_lines)
   end
 end
 
@@ -476,38 +511,64 @@ function DeadLetterParse(sName, sLine, wildcards)
     DeadLetterStop()
   elseif sLine == end_line_text then
     waiting = true
-  elseif (not letter_name) and string.match(sLine, "_") then
-    letter_name = sLine
+  elseif string.match(sLine, "_") then
+    table.insert(address_lines, sLine)
   end
 end
 
-local function checkName(regex, list)
-  local found = false
-  for name,data in pairs(list) do
-    if regex:match(name) then
-      if type(data) ~= "table" then
-        Note("ERROR: 'data' is not a table, it's a '" .. type(data) .. "'.")
-      else
-        found = true
-        AnsiNote(table.concat(data, ", "))
-      end
+local function checkName(regex, name, data)
+  if regex:match(name) then
+    if type(data) ~= "table" then
+      Note("ERROR: 'data' is not a table, it's a '" .. type(data) .. "'.")
+    else
+      return true
     end
   end
-  return found
 end
 
 function DeadLetterSolution()
-  if letter_name then
-    local name = rex.new("^".. string.gsub(letter_name, "_", ".") .. "$")
-    local found = false
+  local name_line = address_lines[1]
+  if name_line then
+    local name_regex = rex.new("^".. string.gsub(name_line, "_", ".") .. "$")
 
+    ClearTable(search_results)
+    local resultCount = 0
+
+    -- Check name line against all people for all letter types.
     for i,list in ipairs(all) do
-      local f = checkName(name, list)
-      found = found or f
+      for name,data in pairs(list) do
+        if checkName(name_regex, name, data) then
+          search_results[name] = data
+          resultCount = resultCount + 1
+        end
+      end
     end
 
-    if not found then
-      Note("Sorry, couldn't find a match for: '" .. tostring(letter_name) .. "'.")
+    -- If there are multiple results, try to narrow it down by subsequent lines.
+    if resultCount > 1 then
+      local discardStr = ""
+      if #address_lines > 1 then
+        local city_line = address_lines[2] -- Second line more reliable than last. (?)
+        for name,data in pairs(search_results) do
+          local city_regex = rex.new("^.*" .. string.gsub(city_line, "_", ".") .. ".*$")
+          if not city_regex:match(data[2]) then
+            discardStr = discardStr .. name .. ", "
+            search_results[name] = nil
+          end
+        end
+      end
+      if string.len(discardStr) > 0 then
+        discardStr = "   " .. resultCount .. " Results found. Discarded: " .. string.sub(discardStr, 1, -3)
+        Note(discardStr)
+      end
+    elseif resultCount == 0 then
+      Note("Sorry, couldn't find a match for: '" .. tostring(name_line) .. "'.")
+      return
+    end
+
+    -- Print all results.
+    for name,data in pairs(search_results) do
+      AnsiNote(table.concat(data, ", "))
     end
   end
 end
