@@ -35,7 +35,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <aliases>
       <alias
         match="solveLetterTest"
-        enabled="y"
+        enabled="n"
         ignore_case="y"
         sequence="30"
         script="DeadLetterTest"
