@@ -89,7 +89,7 @@ local distant_land = {
  ["Cut Me Own Hand Off Dhblah"] = {"Cut Me Own Hand Off [Dhblah]","Oasis"},
  ["Miss Pennie Laced"] = {"Miss Pennie [Laced]","Ohulan-Cutash"},
  ["Berti Boggis"] = {"[Berti] Boggis","Skund Forest, Pekan Ford"},
- ["The Proprietor"] = {"The Proprietor","A ferry shop, Counterweight Continent"},
+ ["The Proprietor"] = {"The Proprietor","A ferry shop, Counterweight Continent (brown islands or tuna walk)"},
 }
 local far_away = {
  ["Cern Smith"] = {"Cern Smith","Bad Ass"},
@@ -560,23 +560,24 @@ function DeadLetterSolution()
     for i,list in ipairs(all) do
       for name,data in pairs(list) do
         if checkName(name_regex, name, data) then
-          search_results[name] = {data = data, list = list}
+          table.insert(search_results, {name = name, data = data, list = list})
           resultCount = resultCount + 1
         end
       end
     end
-
     -- If there are multiple results, try to narrow it down by subsequent lines.
     if resultCount > 1 then
       local discardStr = ""
       if #address_lines > 1 then
         local city_line = address_lines[2] -- Second line more reliable than last. (?)
-        for name,v in pairs(search_results) do
+        for i=#search_results, 1, -1 do
+          local v = search_results[i]
+          name = v.name
           local city_regex = rex.new(string.gsub(city_line, "_", "."))
           if not city_regex:match(v.data[2]) then
             local ls = getListNameString(v.list)
             discardStr = discardStr .. ls .. name .. ", "
-            search_results[name] = nil
+            table.remove(search_results, i)
           end
         end
       end
