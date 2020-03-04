@@ -479,9 +479,8 @@ end
 
 local testLetter = {
   --"_________i",
-  "__o_____",
-  "______la___c",
-  "_h__A_a_e_____p__e",
+  "Kodattai",
+  "Ankh-Morpork, The Cattle District"
 }
 
 function DeadLetterTest()
@@ -552,7 +551,10 @@ end
 function DeadLetterSolution()
   local name_line = address_lines[1]
   if name_line then
-    local name_regex = rex.new("^".. string.gsub(name_line, "_", ".") .. "$")
+    local regex_pattern = name_line
+    regex_pattern = string.gsub(regex_pattern, "%.", "\\.")
+    regex_pattern = "^" .. string.gsub(regex_pattern, "_", ".") .. "$"
+    local name_regex = rex.new(regex_pattern)
 
     ClearTable(search_results)
     local resultCount = 0
@@ -583,7 +585,7 @@ function DeadLetterSolution()
         end
       end
       if string.len(discardStr) > 0 then
-        discardStr = "   " .. resultCount .. " Results found. Discarded: " .. string.sub(discardStr, 1, -3)
+        discardStr = "   " .. resultCount .. " Results found. Discarded: " .. string.sub(discardStr, 1, -3) .. "\n"
         Note(discardStr)
       end
     elseif resultCount == 0 then
